@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bloomGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C62845" />
+      <stop offset="100%" stop-color="#8F1538" />
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#8F1538" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="#FFF0F2" stroke="#F4C2CC" stroke-width="2"/>
+  <path d="M50 18 C35 34 22 52 28 68 C34 82 66 82 72 68 C78 52 65 34 50 18 Z" 
+        fill="url(#bloomGrad)" filter="url(#softGlow)"/>
+  <!-- Inner delicate flower petal accents -->
+  <path d="M50 42 C45 52 42 62 50 72 C58 62 55 52 50 42 Z" fill="#FFF0F2" opacity="0.85"/>
+  <circle cx="50" cy="58" r="3.5" fill="#C62845"/>
+</svg>
