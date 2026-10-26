@@ -11,13 +11,18 @@ import {
   Activity,
   Smile,
   Droplets,
-  CheckCircle2
+  CheckCircle2,
+  Thermometer,
+  Moon,
+  Info
 } from 'lucide-react';
 import {
   PeriodLog,
   SymptomLog,
   MoodLog,
-  UserSettings
+  UserSettings,
+  MenopauseSymptomEntry,
+  BleedingEvent
 } from '../../types';
 import {
   calculateCycleStats,
@@ -30,14 +35,41 @@ interface InsightsViewProps {
   symptomLogs: SymptomLog[];
   moodLogs: MoodLog[];
   settings: UserSettings;
+  menopauseSymptoms?: MenopauseSymptomEntry[];
+  bleedingEvents?: BleedingEvent[];
 }
 
 export const InsightsView: React.FC<InsightsViewProps> = ({
   periodLogs,
   symptomLogs,
   moodLogs,
-  settings
+  settings,
+  menopauseSymptoms = [],
+  bleedingEvents = []
 }) => {
+  const [rangeFilter, setRangeFilter] = React.useState<'7d' | '30d' | '90d' | 'all'>('30d');
+
+  const cutoff = React.useMemo(() => {
+    if (rangeFilter === 'all') return null;
+    const d = new Date();
+    d.setDate(d.getDate() - (rangeFilter === '7d' ? 7 : rangeFilter === '30d' ? 30 : 90));
+    return d.toISOString().slice(0, 10);
+  }, [rangeFilter]);
+
+  const filteredMeno = React.useMemo(() => {
+    if (!cutoff) return menopauseSymptoms;
+    return menopauseSymptoms.filter(m => m.date >= cutoff);
+  }, [menopauseSymptoms, cutoff]);
+
+  const filteredMoodsList = React.useMemo(() => {
+    if (!cutoff) return moodLogs;
+    return moodLogs.filter(m => m.date >= cutoff);
+  }, [moodLogs, cutoff]);
+
+  const filteredSymsList = React.useMemo(() => {
+    if (!cutoff) return symptomLogs;
+    return symptomLogs.filter(s => s.date >= cutoff);
+  }, [symptomLogs, cutoff]);
   const stats = calculateCycleStats(periodLogs, settings);
   const detectedPeriods = detectPeriodsFromLogs(periodLogs);
 
@@ -240,14 +272,17 @@ export const InsightsView: React.FC<InsightsViewProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs">
-            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs">
-              🩸 <strong className="text-cherry-600">{periodsThisMonth}</strong> Bleeding Days
+            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs flex items-center gap-1.5">
+              <Droplets className="w-3.5 h-3.5 text-cherry-600" />
+              <span><strong className="text-cherry-600">{periodsThisMonth}</strong> Bleeding Days</span>
             </div>
-            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs">
-              ⚡ <strong className="text-cherry-600">{symptomsThisMonth}</strong> Symptoms Logged
+            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs flex items-center gap-1.5">
+              <Activity className="w-3.5 h-3.5 text-amber-600" />
+              <span><strong className="text-cherry-600">{symptomsThisMonth}</strong> Symptoms Logged</span>
             </div>
-            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs">
-              ✨ <strong className="text-cherry-600">{moodsThisMonth}</strong> Mood Entries
+            <div className="px-3.5 py-2 rounded-2xl bg-white border border-rosepink-200 text-burgundy-900 font-semibold shadow-2xs flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-rosepink-400" />
+              <span><strong className="text-cherry-600">{moodsThisMonth}</strong> Mood Entries</span>
             </div>
           </div>
         </div>
@@ -562,6 +597,123 @@ export const InsightsView: React.FC<InsightsViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Menopause & Sleep Trends (if user is tracking or has logged entries) */}
+      {(filteredMeno.length > 0 || settings.menopauseStage !== 'menstrual') && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft border border-rosepink-200/80 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-rosepink-100">
+            <div className="flex items-center gap-2.5">
+              <Thermometer className="w-5 h-5 text-cherry-600" />
+              <div>
+                <h3 className="font-serif text-lg font-bold text-burgundy-900">
+                  Menopause & Vasomotor Patterns
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Daily hot flash frequency, night sweats, and sleep duration logs
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {(['7d', '30d', '90d', 'all'] as const).map(r => (
+                <button
+                  key={r}
+                  onClick={() => setRangeFilter(r)}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                    rangeFilter === r
+                      ? 'bg-burgundy-900 text-white'
+                      : 'bg-blush-50 text-gray-600 border border-rosepink-200 hover:bg-rosepink-100'
+                  }`}
+                >
+                  {r.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {filteredMeno.length > 0 ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div className="p-3.5 rounded-2xl bg-blush-50/70 border border-rosepink-100">
+                  <span className="text-gray-500 block text-[10px] font-bold uppercase">Days Recorded</span>
+                  <span className="font-serif text-xl font-bold text-burgundy-900 mt-1 block">
+                    {filteredMeno.length} days
+                  </span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">In selected range</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-blush-50/70 border border-rosepink-100">
+                  <span className="text-gray-500 block text-[10px] font-bold uppercase">Total Hot Flashes</span>
+                  <span className="font-serif text-xl font-bold text-cherry-700 mt-1 block">
+                    {filteredMeno.reduce((acc, cur) => acc + cur.hotFlashes, 0)}
+                  </span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">
+                    Avg {(filteredMeno.reduce((acc, cur) => acc + cur.hotFlashes, 0) / filteredMeno.length).toFixed(1)} / day
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-blush-50/70 border border-rosepink-100">
+                  <span className="text-gray-500 block text-[10px] font-bold uppercase">Avg Sleep</span>
+                  <span className="font-serif text-xl font-bold text-burgundy-900 mt-1 block">
+                    {filteredMeno.filter(m => m.sleepHours).length > 0
+                      ? `${(filteredMeno.reduce((acc, cur) => acc + (cur.sleepHours || 0), 0) / filteredMeno.filter(m => m.sleepHours).length).toFixed(1)} hrs`
+                      : 'N/A'}
+                  </span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Self-reported sleep</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-blush-50/70 border border-rosepink-100">
+                  <span className="text-gray-500 block text-[10px] font-bold uppercase">Avg Severity</span>
+                  <span className="font-serif text-xl font-bold text-burgundy-900 mt-1 block">
+                    {(filteredMeno.reduce((acc, cur) => acc + cur.hotFlashSeverity, 0) / filteredMeno.length).toFixed(1)} / 5
+                  </span>
+                  <span className="text-[10px] text-gray-400 block mt-0.5">Vasomotor intensity</span>
+                </div>
+              </div>
+
+              {/* Hot Flashes Bar Chart */}
+              <div className="p-4 rounded-2xl bg-blush-50/40 border border-rosepink-100">
+                <span className="text-xs font-bold text-burgundy-900 block mb-3">
+                  Recent Daily Hot Flash Counts
+                </span>
+                <div className="flex items-end gap-2 h-28 pt-4">
+                  {filteredMeno.slice(-14).map((entry, idx) => {
+                    const heightPercent = Math.min(100, (entry.hotFlashes / 12) * 100);
+                    return (
+                      <div key={idx} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                        <span className="text-[9px] font-bold text-cherry-700">{entry.hotFlashes > 0 ? entry.hotFlashes : ''}</span>
+                        <div
+                          className="w-full bg-gradient-to-t from-burgundy-800 to-cherry-500 rounded-t-md transition-all"
+                          style={{ height: `${Math.max(4, heightPercent)}%` }}
+                          title={`${entry.date}: ${entry.hotFlashes} flashes`}
+                        />
+                        <span className="text-[8px] text-gray-400 truncate w-full text-center">
+                          {entry.date.slice(5)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 py-6 text-center">
+              No daily check-ins recorded in this time range. Use the Symptoms tab to log daily observations.
+            </p>
+          )}
+
+          {/* Sample Size & Non-Causal Associations Disclaimer */}
+          <div className="p-4 rounded-2xl bg-rosepink-50/60 border border-rosepink-200 flex items-start gap-3">
+            <Info className="w-4 h-4 text-cherry-600 shrink-0 mt-0.5" />
+            <div className="text-xs text-burgundy-900 space-y-1">
+              <p className="font-bold">Understanding Data Associations & Sample Size</p>
+              <p className="text-gray-600 leading-relaxed text-[11px]">
+                HER CYCLE displays observational patterns based solely on the data you log. Small sample sizes or unrecorded days may skew visible trends. Observed correlations (e.g. higher stress on days with more hot flashes) describe co-occurrence in your diary and do not prove direct causation or substitute for clinical diagnostics.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

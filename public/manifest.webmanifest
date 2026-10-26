@@ -1,24 +1,48 @@
 {
-  "name": "HerCycle - Period & Health Tracker",
-  "short_name": "HerCycle",
-  "description": "Private, elegant, offline-first menstrual cycle and holistic wellness tracker.",
+  "name": "HER CYCLE - Women's Health Tracker",
+  "short_name": "HER CYCLE",
+  "description": "Private, elegant, offline-first menstrual cycle and holistic wellness tracker for every stage of life.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#FFF9F5",
   "theme_color": "#8F1538",
   "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["health", "lifestyle", "medical"],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Today",
+      "short_name": "Log",
+      "description": "Quick-log today's symptoms and mood",
+      "url": "/?action=quicklog",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Droplets, Moon, Sun, Flame } from 'lucide-react';
+import { Sparkles, Droplets, Moon, Sun, Flame, Edit3 } from 'lucide-react';
 import { CurrentPhaseInfo } from '../../types';
 
 interface CycleRingProps {
@@ -179,8 +179,9 @@ export const CycleRing: React.FC<CycleRingProps> = ({ phaseInfo, onOpenQuickLog 
           </div>
 
           {/* Subtle tap call-to-action hint */}
-          <span className="text-[10px] text-cherry-600/80 group-hover:text-cherry-600 font-semibold mt-3 transition-colors">
-            Tap to Log Today ✍️
+          <span className="text-[10px] text-cherry-600/80 group-hover:text-cherry-600 font-semibold mt-3 transition-colors flex items-center justify-center gap-1">
+            <span>Tap to Log Today</span>
+            <Edit3 className="w-3 h-3" />
           </span>
         </div>
       </div>

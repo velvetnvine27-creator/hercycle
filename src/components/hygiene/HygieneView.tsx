@@ -104,7 +104,7 @@ export const HygieneView: React.FC = () => {
           if (prev <= 1) {
             setIsRunning(false);
             notificationService.sendNotification(
-              'HerCycle Product Reminder 🌸',
+              'HER CYCLE Product Reminder',
               `Time to change or check your ${selectedProduct.name}! Keep your body fresh and comfortable.`,
               'hygiene'
             );

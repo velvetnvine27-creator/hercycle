@@ -91,7 +91,8 @@ export const EducationView: React.FC<EducationViewProps> = ({ initialArticleId }
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           {[
             { key: 'all', label: 'All Guides' },
-            { key: 'warning', label: '⚠️ Red Flags & Emergency' },
+            { key: 'warning', label: 'Red Flags & Emergency' },
+            { key: 'menopause', label: 'Menopause & Perimenopause' },
             { key: 'phases', label: 'Cycle Phases & Hormones' },
             { key: 'pain', label: 'Cramps & PMS / PMDD' },
             { key: 'basics', label: 'Discharge & Cervical Fluid' },

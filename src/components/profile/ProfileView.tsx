@@ -12,10 +12,16 @@ import {
   Check,
   AlertTriangle,
   Info,
-  Heart
+  Heart,
+  Lock,
+  Key,
+  LogOut,
+  Eye,
+  EyeOff
 } from 'lucide-react';
-import { UserSettings } from '../../types';
+import { UserSettings, MenopauseStage } from '../../types';
 import { dbService } from '../../services/db';
+import { authService } from '../../services/authService';
 import { notificationService } from '../../services/notificationService';
 import { generateSampleData } from '../../services/demoData';
 
@@ -38,6 +44,16 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [periodDuration, setPeriodDuration] = useState(settings.periodDuration || 5);
   const [lutealLength, setLutealLength] = useState(settings.lutealLength || 14);
   const [theme, setTheme] = useState(settings.theme || 'burgundy');
+  const [menopauseStage, setMenopauseStage] = useState<MenopauseStage>(settings.menopauseStage || 'menstrual');
+
+  // PIN Security States
+  const [isChangingPin, setIsChangingPin] = useState(false);
+  const [pinPhone, setPinPhone] = useState('');
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmNewPin, setConfirmNewPin] = useState('');
+  const [showPinFields, setShowPinFields] = useState(false);
+  const [pinChangeMsg, setPinChangeMsg] = useState<{ text: string; isError: boolean } | null>(null);
 
   // Reminders
   const [periodDueAlert, setPeriodDueAlert] = useState(settings.reminderPreferences?.periodDue ?? true);
@@ -57,6 +73,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       cycleLength: Number(cycleLength),
       periodDuration: Number(periodDuration),
       lutealLength: Number(lutealLength),
+      menopauseStage: menopauseStage,
       theme: theme as any,
       reminderPreferences: {
         periodDue: periodDueAlert,
@@ -73,6 +90,39 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
+  const handleChangePin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPinChangeMsg(null);
+    if (newPin !== confirmNewPin) {
+      setPinChangeMsg({ text: 'New PIN and confirmation do not match.', isError: true });
+      return;
+    }
+    const res = await authService.changePin(pinPhone, currentPin, newPin);
+    if (res.success) {
+      setPinChangeMsg({ text: 'PIN successfully updated!', isError: false });
+      setCurrentPin('');
+      setNewPin('');
+      setConfirmNewPin('');
+      setTimeout(() => {
+        setIsChangingPin(false);
+        setPinChangeMsg(null);
+      }, 2000);
+    } else {
+      setPinChangeMsg({ text: res.error || 'Failed to update PIN.', isError: true });
+    }
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    window.location.reload();
+  };
+
+  const handleResetAuth = async () => {
+    if (!window.confirm('Reset your PIN access gate? You will need to create a new PIN.')) return;
+    await authService.resetAccount();
+    window.location.reload();
+  };
+
   // Export JSON
   const handleExportData = async () => {
     try {
@@ -82,7 +132,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       const a = document.createElement('a');
       const dateStr = new Date().toISOString().slice(0, 10);
       a.href = url;
-      a.download = `hercycle-backup-${dateStr}.json`;
+      a.download = `her-cycle-backup-${dateStr}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -165,7 +215,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const handleTestNotification = async () => {
     await notificationService.requestPermission();
     notificationService.sendNotification(
-      'HerCycle Test Notification 🌸',
+      'HER CYCLE Test Notification',
       'Reminders and in-app alerts are active and functioning!',
       'info'
     );
@@ -205,6 +255,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* Menopause / Life Stage */}
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-bold text-burgundy-900 mb-1.5">
+              Health Focus & Menopause Stage (User-Selected)
+            </label>
+            <select
+              value={menopauseStage}
+              onChange={e => setMenopauseStage(e.target.value as MenopauseStage)}
+              className="w-full px-4 py-2.5 rounded-xl border border-rosepink-200 text-xs bg-blush-50/20 focus:outline-none focus:ring-2 focus:ring-cherry-500/20 text-gray-800 font-medium"
+            >
+              <option value="menstrual">Menstrual Cycle Tracking (Cycles & Fertility Window)</option>
+              <option value="perimenopause">Perimenopause (Transition, Hot Flashes & Irregular Cycles)</option>
+              <option value="menopause">Menopause (12+ Consecutive Months Without Period)</option>
+              <option value="postmenopause">Postmenopause (Ongoing Vitality, Bone & Heart Health)</option>
+              <option value="combined">Combined Women's Health Tracking</option>
+              <option value="not_sure">Not Sure Yet / Self-Observation</option>
+            </select>
+            <span className="text-[10px] text-gray-500 block mt-1">
+              Select what best reflects your current experience. This is never automatically diagnosed from age or symptoms.
+            </span>
+          </div>
+
           {/* Nickname */}
           <div>
             <label className="block text-xs font-bold text-burgundy-900 mb-1.5">
@@ -354,6 +426,127 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
       </form>
 
+      {/* Account Security & PIN Access Gate */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft border border-rosepink-200/80 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-rosepink-100">
+          <div className="flex items-center gap-2.5">
+            <Lock className="w-5 h-5 text-cherry-600" />
+            <div>
+              <h2 className="font-serif text-lg font-bold text-burgundy-900">
+                Security & 6-Digit PIN Gate
+              </h2>
+              <p className="text-xs text-gray-500">
+                Protects this device session. All hashes are stored locally in IndexedDB.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsChangingPin(!isChangingPin)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-rosepink-200 text-burgundy-900 text-xs font-semibold hover:bg-rosepink-50 transition-colors"
+            >
+              <Key className="w-3.5 h-3.5 text-cherry-600" />
+              <span>{isChangingPin ? 'Cancel' : 'Change PIN'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-rosepink-100 text-burgundy-900 text-xs font-bold hover:bg-rosepink-200 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Lock App</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Change PIN Collapsible Form */}
+        {isChangingPin && (
+          <form onSubmit={handleChangePin} className="p-4 rounded-2xl bg-blush-50/70 border border-rosepink-200 space-y-3">
+            <span className="text-xs font-bold text-burgundy-900 block">Update 6-Digit PIN</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block text-gray-600 mb-1">Registered Phone Number</label>
+                <input
+                  type="tel"
+                  value={pinPhone}
+                  onChange={e => setPinPhone(e.target.value)}
+                  placeholder="e.g. +91 9876543210"
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-rosepink-200 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-600 mb-1">Current 6-Digit PIN</label>
+                <input
+                  type="password"
+                  value={currentPin}
+                  onChange={e => setCurrentPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="••••••"
+                  maxLength={6}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-rosepink-200 bg-white tracking-widest"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-600 mb-1">New 6-Digit PIN</label>
+                <input
+                  type="password"
+                  value={newPin}
+                  onChange={e => setNewPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="••••••"
+                  maxLength={6}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-rosepink-200 bg-white tracking-widest"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-600 mb-1">Confirm New PIN</label>
+                <input
+                  type="password"
+                  value={confirmNewPin}
+                  onChange={e => setConfirmNewPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="••••••"
+                  maxLength={6}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-rosepink-200 bg-white tracking-widest"
+                />
+              </div>
+            </div>
+
+            {pinChangeMsg && (
+              <p className={`text-xs font-semibold ${pinChangeMsg.isError ? 'text-cherry-600' : 'text-emerald-700'}`}>
+                {pinChangeMsg.text}
+              </p>
+            )}
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="submit"
+                disabled={newPin.length !== 6 || confirmNewPin.length !== 6}
+                className="px-5 py-2 rounded-xl bg-burgundy-900 text-white font-bold text-xs disabled:opacity-50"
+              >
+                Update PIN
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="flex items-center justify-between text-xs pt-1">
+          <span className="text-gray-500 text-[11px]">
+            Forgot your PIN? You can reset your access gate (requires recreating a PIN).
+          </span>
+          <button
+            type="button"
+            onClick={handleResetAuth}
+            className="text-cherry-600 hover:underline font-semibold text-xs"
+          >
+            Reset PIN Gate
+          </button>
+        </div>
+      </div>
+
       {/* Doctor Visit Clinical Report Card */}
       <div className="bg-gradient-to-r from-rosepink-100 to-blush-100 rounded-3xl p-6 sm:p-7 border border-rosepink-200 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-start gap-3.5">
@@ -472,7 +665,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </h3>
         </div>
         <p className="text-xs text-gray-600 leading-relaxed">
-          HerCycle is an offline Progressive Web Application (PWA). All calculations, phase predictions, symptom records, and private journals are processed and stored exclusively inside your browser's persistent <strong>IndexedDB</strong> storage.
+          HER CYCLE is an offline Progressive Web Application (PWA). All calculations, phase predictions, symptom records, and private journals are processed and stored exclusively inside your browser's persistent <strong>IndexedDB</strong> storage.
         </p>
         <p className="text-xs text-gray-600 leading-relaxed">
           <strong>Important storage disclaimer:</strong> Browser IndexedDB is retained locally on your computer/phone. It does not synchronize automatically across devices, and clearing your browser cache/site data will remove it unless you export a JSON backup. Browser storage is not equivalent to HIPAA-compliant encrypted hospital cloud storage; we encourage you to keep your personal device passcode-protected.

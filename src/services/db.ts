@@ -4,11 +4,14 @@ import {
   SymptomLog,
   MoodLog,
   MedicalLog,
-  HygieneLog
+  HygieneLog,
+  AuthRecord,
+  MenopauseSymptomEntry,
+  BleedingEvent
 } from '../types';
 
 const DB_NAME = 'hercycle_db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 interface HerCycleExportData {
   version: number;
@@ -20,6 +23,8 @@ interface HerCycleExportData {
   moodLogs: MoodLog[];
   medicalLogs: MedicalLog[];
   hygieneLogs: HygieneLog[];
+  menopauseSymptoms?: MenopauseSymptomEntry[];
+  bleedingEvents?: BleedingEvent[];
 }
 
 export class HerCycleDatabase {
@@ -33,40 +38,47 @@ export class HerCycleDatabase {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
+        const oldVersion = event.oldVersion;
 
-        // Settings store
+        // v1 stores (safe to re-run due to contains checks)
         if (!db.objectStoreNames.contains('settings')) {
           db.createObjectStore('settings');
         }
-
-        // Period logs store (indexed by date)
         if (!db.objectStoreNames.contains('period_logs')) {
           const store = db.createObjectStore('period_logs', { keyPath: 'date' });
           store.createIndex('flow', 'flow', { unique: false });
         }
-
-        // Symptom logs store
         if (!db.objectStoreNames.contains('symptom_logs')) {
           const store = db.createObjectStore('symptom_logs', { keyPath: 'id' });
           store.createIndex('date', 'date', { unique: false });
           store.createIndex('category', 'category', { unique: false });
         }
-
-        // Mood logs store (indexed by date)
         if (!db.objectStoreNames.contains('mood_logs')) {
           db.createObjectStore('mood_logs', { keyPath: 'date' });
         }
-
-        // Medical logs store
         if (!db.objectStoreNames.contains('medical_logs')) {
           const store = db.createObjectStore('medical_logs', { keyPath: 'id' });
           store.createIndex('type', 'type', { unique: false });
           store.createIndex('dateTime', 'dateTime', { unique: false });
         }
-
-        // Hygiene logs store (indexed by date)
         if (!db.objectStoreNames.contains('hygiene_logs')) {
           db.createObjectStore('hygiene_logs', { keyPath: 'date' });
+        }
+
+        // v2 stores
+        if (oldVersion < 2) {
+          if (!db.objectStoreNames.contains('auth')) {
+            db.createObjectStore('auth');
+          }
+          if (!db.objectStoreNames.contains('menopause_symptoms')) {
+            const ms = db.createObjectStore('menopause_symptoms', { keyPath: 'id' });
+            ms.createIndex('date', 'date', { unique: false });
+          }
+          if (!db.objectStoreNames.contains('bleeding_events')) {
+            const be = db.createObjectStore('bleeding_events', { keyPath: 'id' });
+            be.createIndex('date', 'date', { unique: false });
+            be.createIndex('type', 'type', { unique: false });
+          }
         }
       };
 
@@ -95,6 +107,37 @@ export class HerCycleDatabase {
       const tx = db.transaction('settings', 'readwrite');
       const store = tx.objectStore('settings');
       const req = store.put({ ...settings, updatedAt: new Date().toISOString() }, 'user_settings');
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // --- Auth ---
+  async getAuth(): Promise<AuthRecord | null> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('auth', 'readonly');
+      const req = tx.objectStore('auth').get('pin_auth');
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async saveAuth(record: AuthRecord): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('auth', 'readwrite');
+      const req = tx.objectStore('auth').put(record, 'pin_auth');
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async clearAuth(): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('auth', 'readwrite');
+      const req = tx.objectStore('auth').clear();
       req.onsuccess = () => resolve();
       req.onerror = () => reject(req.error);
     });
@@ -305,20 +348,101 @@ export class HerCycleDatabase {
     });
   }
 
-  // --- Backup, Restore, and Data Management ---
+  // --- Menopause Symptoms ---
+  async getAllMenopauseSymptoms(): Promise<MenopauseSymptomEntry[]> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('menopause_symptoms', 'readonly');
+      const req = tx.objectStore('menopause_symptoms').getAll();
+      req.onsuccess = () => {
+        const sorted = (req.result as MenopauseSymptomEntry[]).sort((a, b) => b.date.localeCompare(a.date));
+        resolve(sorted);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async getMenopauseSymptomsForDate(date: string): Promise<MenopauseSymptomEntry[]> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('menopause_symptoms', 'readonly');
+      const index = tx.objectStore('menopause_symptoms').index('date');
+      const req = index.getAll(date);
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async saveMenopauseSymptom(entry: MenopauseSymptomEntry): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('menopause_symptoms', 'readwrite');
+      const req = tx.objectStore('menopause_symptoms').put(entry);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async deleteMenopauseSymptom(id: string): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('menopause_symptoms', 'readwrite');
+      const req = tx.objectStore('menopause_symptoms').delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // --- Bleeding Events ---
+  async getAllBleedingEvents(): Promise<BleedingEvent[]> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('bleeding_events', 'readonly');
+      const req = tx.objectStore('bleeding_events').getAll();
+      req.onsuccess = () => {
+        const sorted = (req.result as BleedingEvent[]).sort((a, b) => b.date.localeCompare(a.date));
+        resolve(sorted);
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async saveBleedingEvent(event: BleedingEvent): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('bleeding_events', 'readwrite');
+      const req = tx.objectStore('bleeding_events').put(event);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async deleteBleedingEvent(id: string): Promise<void> {
+    const db = await this.getDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('bleeding_events', 'readwrite');
+      const req = tx.objectStore('bleeding_events').delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // --- Export / Import / Clear ---
   async exportAllDataJSON(): Promise<string> {
-    const [settings, periodLogs, symptomLogs, moodLogs, medicalLogs] = await Promise.all([
+    const [settings, periodLogs, symptomLogs, moodLogs, medicalLogs, menopauseSymptoms, bleedingEvents] = await Promise.all([
       this.getSettings(),
       this.getAllPeriodLogs(),
       this.getAllSymptomLogs(),
       this.getAllMoodLogs(),
-      this.getAllMedicalLogs()
+      this.getAllMedicalLogs(),
+      this.getAllMenopauseSymptoms(),
+      this.getAllBleedingEvents()
     ]);
 
     const exportPayload: HerCycleExportData = {
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
-      source: 'HerCycle (Offline IndexedDB)',
+      source: 'HER CYCLE (Offline IndexedDB)',
       settings: settings || {
         onboardingCompleted: false,
         cycleLength: 28,
@@ -335,7 +459,9 @@ export class HerCycleDatabase {
       symptomLogs,
       moodLogs,
       medicalLogs,
-      hygieneLogs: []
+      hygieneLogs: [],
+      menopauseSymptoms,
+      bleedingEvents
     };
 
     return JSON.stringify(exportPayload, null, 2);
@@ -344,85 +470,69 @@ export class HerCycleDatabase {
   async importDataJSON(jsonString: string): Promise<{ success: boolean; message: string; counts?: Record<string, number> }> {
     try {
       const parsed = JSON.parse(jsonString);
-
-      // Validation
       if (!parsed || typeof parsed !== 'object') {
         return { success: false, message: 'Invalid JSON file format: root must be an object.' };
       }
-
       if (!Array.isArray(parsed.periodLogs) && !parsed.settings) {
-        return { success: false, message: 'Invalid HerCycle data: missing required settings or period logs structure.' };
+        return { success: false, message: 'Invalid HER CYCLE data: missing required settings or period logs structure.' };
       }
 
       const db = await this.getDB();
+      const stores = ['settings', 'period_logs', 'symptom_logs', 'mood_logs', 'medical_logs', 'hygiene_logs', 'menopause_symptoms', 'bleeding_events'];
+      const tx = db.transaction(stores, 'readwrite');
 
-      // Clear existing records in a multi-store transaction
-      const tx = db.transaction(['settings', 'period_logs', 'symptom_logs', 'mood_logs', 'medical_logs', 'hygiene_logs'], 'readwrite');
-
-      if (parsed.settings) {
-        tx.objectStore('settings').put(parsed.settings, 'user_settings');
-      }
+      if (parsed.settings) tx.objectStore('settings').put(parsed.settings, 'user_settings');
 
       let pCount = 0;
       if (Array.isArray(parsed.periodLogs)) {
         const store = tx.objectStore('period_logs');
         for (const item of parsed.periodLogs) {
-          if (item && item.date && item.flow) {
-            store.put(item);
-            pCount++;
-          }
+          if (item?.date && item?.flow) { store.put(item); pCount++; }
         }
       }
-
       let sCount = 0;
       if (Array.isArray(parsed.symptomLogs)) {
         const store = tx.objectStore('symptom_logs');
         for (const item of parsed.symptomLogs) {
-          if (item && item.id && item.date) {
-            store.put(item);
-            sCount++;
-          }
+          if (item?.id && item?.date) { store.put(item); sCount++; }
         }
       }
-
       let mCount = 0;
       if (Array.isArray(parsed.moodLogs)) {
         const store = tx.objectStore('mood_logs');
         for (const item of parsed.moodLogs) {
-          if (item && item.date) {
-            store.put(item);
-            mCount++;
-          }
+          if (item?.date) { store.put(item); mCount++; }
         }
       }
-
       let medCount = 0;
       if (Array.isArray(parsed.medicalLogs)) {
         const store = tx.objectStore('medical_logs');
         for (const item of parsed.medicalLogs) {
-          if (item && item.id && item.title) {
-            store.put(item);
-            medCount++;
-          }
+          if (item?.id && item?.title) { store.put(item); medCount++; }
+        }
+      }
+      let msCount = 0;
+      if (Array.isArray(parsed.menopauseSymptoms)) {
+        const store = tx.objectStore('menopause_symptoms');
+        for (const item of parsed.menopauseSymptoms) {
+          if (item?.id && item?.date) { store.put(item); msCount++; }
+        }
+      }
+      let beCount = 0;
+      if (Array.isArray(parsed.bleedingEvents)) {
+        const store = tx.objectStore('bleeding_events');
+        for (const item of parsed.bleedingEvents) {
+          if (item?.id && item?.date) { store.put(item); beCount++; }
         }
       }
 
       return new Promise((resolve) => {
-        tx.oncomplete = () => {
-          resolve({
-            success: true,
-            message: `Successfully imported backup!`,
-            counts: {
-              periods: pCount,
-              symptoms: sCount,
-              moods: mCount,
-              medical: medCount
-            }
-          });
-        };
-        tx.onerror = () => {
-          resolve({ success: false, message: 'Database write error during import: ' + tx.error?.message });
-        };
+        tx.oncomplete = () => resolve({
+          success: true,
+          message: 'Successfully imported backup!',
+          counts: { periods: pCount, symptoms: sCount, moods: mCount, medical: medCount, menopause: msCount, bleeding: beCount }
+        });
+        tx.onerror = () => resolve({ success: false, message: 'Database write error: ' + tx.error?.message });
       });
     } catch (err: any) {
       return { success: false, message: 'Failed to parse JSON file: ' + err.message };
@@ -432,14 +542,9 @@ export class HerCycleDatabase {
   async clearAllData(): Promise<void> {
     const db = await this.getDB();
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(['settings', 'period_logs', 'symptom_logs', 'mood_logs', 'medical_logs', 'hygiene_logs'], 'readwrite');
-      tx.objectStore('settings').clear();
-      tx.objectStore('period_logs').clear();
-      tx.objectStore('symptom_logs').clear();
-      tx.objectStore('mood_logs').clear();
-      tx.objectStore('medical_logs').clear();
-      tx.objectStore('hygiene_logs').clear();
-
+      const stores = ['settings', 'period_logs', 'symptom_logs', 'mood_logs', 'medical_logs', 'hygiene_logs', 'menopause_symptoms', 'bleeding_events'];
+      const tx = db.transaction(stores, 'readwrite');
+      stores.forEach(s => tx.objectStore(s).clear());
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });

@@ -4,6 +4,14 @@ export type MenstrualPhase = 'menstrual' | 'follicular' | 'ovulatory' | 'luteal'
 
 export type CycleRegularity = 'regular' | 'somewhat_irregular' | 'very_irregular' | 'not_sure';
 
+export type MenopauseStage =
+  | 'menstrual'       // still having regular cycles
+  | 'perimenopause'   // irregular cycles, transitioning
+  | 'menopause'       // 12+ months since last period
+  | 'postmenopause'   // beyond menopause
+  | 'combined'        // tracking multiple aspects
+  | 'not_sure';       // user unsure
+
 export interface UserSettings {
   id?: string;
   onboardingCompleted: boolean;
@@ -22,6 +30,10 @@ export interface UserSettings {
   };
   theme: 'burgundy' | 'cherry' | 'rose' | 'blush';
   waterGoalGlasses: number; // default 8
+  // Menopause fields
+  menopauseStage?: MenopauseStage;
+  menopauseOnboardingCompleted?: boolean;
+  lastMenstrualPeriod?: string; // YYYY-MM-DD
   createdAt: string;
   updatedAt: string;
 }
@@ -40,7 +52,7 @@ export interface PeriodLog {
 export interface SymptomLog {
   id: string;
   date: string; // YYYY-MM-DD
-  category: 'pain' | 'body' | 'mental' | 'digestive' | 'discharge' | 'custom';
+  category: 'pain' | 'body' | 'mental' | 'digestive' | 'discharge' | 'custom' | 'menopause';
   name: string;
   severity: number; // 1 to 5
   dischargeType?: 'dry' | 'sticky' | 'creamy' | 'watery' | 'eggwhite' | 'spotting';
@@ -64,7 +76,7 @@ export interface MoodLog {
 
 export interface MedicalLog {
   id: string;
-  type: 'medication' | 'appointment' | 'lab' | 'allergy' | 'clinician_note';
+  type: 'medication' | 'appointment' | 'lab' | 'allergy' | 'clinician_note' | 'hormone_therapy';
   title: string;
   dosage?: string;
   dateTime: string; // ISO or YYYY-MM-DDTHH:mm
@@ -72,6 +84,7 @@ export interface MedicalLog {
   clinician?: string;
   location?: string;
   notes?: string;
+  sideEffects?: string;
   createdAt: string;
 }
 
@@ -120,7 +133,7 @@ export interface CurrentPhaseInfo {
 export interface EducationArticle {
   id: string;
   title: string;
-  category: 'basics' | 'phases' | 'pain' | 'conditions' | 'doctor' | 'warning';
+  category: 'basics' | 'phases' | 'pain' | 'conditions' | 'doctor' | 'warning' | 'menopause';
   readTime: string;
   badge: string;
   summary: string;
@@ -135,4 +148,71 @@ export interface ProductTimerState {
   startedAt: string;
   durationMinutes: number;
   dueAt: string;
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+export interface AuthRecord {
+  id: 'pin_auth';
+  phoneNumberHash: string;  // SHA-256 of normalized phone number
+  pinHash: string;           // SHA-256(salt + pin)
+  salt: string;              // random 32-char hex
+  failedAttempts: number;
+  lockedUntil: string | null; // ISO string or null
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Menopause Symptom Entry ───────────────────────────────────────────────
+export interface MenopauseSymptomEntry {
+  id: string;
+  date: string;          // YYYY-MM-DD
+  time?: string;         // HH:mm
+  // Vasomotor
+  hotFlashes: number;        // count per day 0-20
+  hotFlashSeverity: number;  // 1-5
+  nightSweats: number;       // 1-5
+  // Sleep
+  sleepHours?: number;
+  sleepQuality: number;      // 1-5
+  nightAwakenings: number;   // 0-10
+  // Mood & cognitive
+  moodRating: number;        // 1-5
+  anxietyLevel: number;      // 1-5
+  irritability: number;      // 1-5
+  brainFog: number;          // 1-5
+  concentration: number;     // 1-5
+  // Physical
+  fatigue: number;           // 1-5
+  headache: number;          // 1-5
+  jointPain: number;         // 1-5
+  musclePain: number;        // 1-5
+  // Urogenital
+  vaginalDryness: number;    // 1-5
+  urinarySymptoms: number;   // 1-5
+  libidoChange: number;      // 1-5 (1=very low, 3=no change, 5=increased)
+  // Other
+  palpitations: number;      // 1-5
+  skinHairChanges: number;   // 1-5
+  // Custom
+  customSymptoms?: Array<{ name: string; severity: number }>;
+  // Context
+  stressLevel: number;       // 1-5
+  energyLevel: number;       // 1-5
+  possibleTriggers?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Bleeding Event (menopause-aware) ─────────────────────────────────────
+export interface BleedingEvent {
+  id: string;
+  date: string;           // YYYY-MM-DD start
+  endDate?: string;       // YYYY-MM-DD end (optional)
+  type: 'period' | 'perimenopausal' | 'spotting' | 'postmenopausal' | 'unknown';
+  flow: FlowIntensity;
+  associatedSymptoms?: string[];
+  notes?: string;
+  seekedMedicalAdvice?: boolean;
+  createdAt: string;
 }

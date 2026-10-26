@@ -127,9 +127,16 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                     <span className="text-gray-600 italic block mt-0.5">"{periodLog.notes}"</span>
                   )}
                 </div>
-                <span className="text-lg">
-                  {periodLog.flow === 'spotting' ? '💧' : periodLog.flow === 'light' ? '🩸' : periodLog.flow === 'medium' ? '🩸🩸' : '🩸🩸🩸'}
-                </span>
+                <div className="flex items-center gap-1" title={`${periodLog.flow} flow`}>
+                  {Array.from({
+                    length: periodLog.flow === 'spotting' ? 1 : periodLog.flow === 'light' ? 2 : periodLog.flow === 'medium' ? 3 : 4
+                  }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`w-2.5 h-2.5 rounded-full ${periodLog.flow === 'spotting' ? 'bg-rosepink-300' : 'bg-cherry-600'}`}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="p-3 rounded-xl bg-gray-50 border border-gray-100 text-xs text-gray-400">

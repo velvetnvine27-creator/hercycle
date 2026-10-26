@@ -3,7 +3,7 @@ import { EducationArticle } from '../types';
 export const EDUCATION_ARTICLES: EducationArticle[] = [
   {
     id: 'warning-signs',
-    title: '⚠️ Urgent Warning Signs: When to Seek Immediate Medical Care',
+    title: 'Urgent Warning Signs: When to Seek Immediate Medical Care',
     category: 'warning',
     readTime: '2 min read',
     badge: 'Urgent Care & Safety',
@@ -156,7 +156,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     content: [
       'Doctor visits are often brief (15–20 minutes). Arriving prepared empowers you to advocate for your health and ensures critical details are not missed.',
       'Checklist to Bring:',
-      '1. Your HerCycle Stats: Date of last period, average cycle length, longest and shortest cycles over the past 6 months.',
+      '1. Your HER CYCLE Stats: Date of last period, average cycle length, longest and shortest cycles over the past 6 months.',
       '2. Symptom Trend Log: Note which cycle phase your symptoms peak (e.g. "Severe migraines consistently occur 3 days before bleeding starts").',
       '3. Medication & Supplement List: Exact dosages of prescriptions, birth control, and over-the-counter pain relievers.',
       '4. Specific Questions: Write down your top 3 concerns at the top of your notepad so you can raise them first.',
@@ -164,8 +164,109 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     keyTakeaways: [
       'Quantify your symptoms: say "Pain rated 8/10 for 3 consecutive days, preventing me from standing" instead of "I have cramps".',
-      'Export or review your HerCycle history before stepping into the examination room.',
+      'Export or review your HER CYCLE history before stepping into the examination room.',
       'You are always entitled to ask for a chaperone, request a smaller speculum, or seek a second opinion.'
+    ]
+  },
+  {
+    id: 'perimenopause-overview',
+    title: 'Understanding Perimenopause: Stages, Hormones & Cycle Changes',
+    category: 'menopause',
+    readTime: '6 min read',
+    badge: 'Menopause Education',
+    summary: 'A comprehensive medical guide to the perimenopausal transition: why cycles become erratic, estrogen fluctuations, and what to expect.',
+    content: [
+      'Perimenopause is the natural biological transition leading up to menopause. It typically begins between ages 40 and 48, lasting anywhere from 4 to 8 years on average.',
+      'During this phase, ovarian reserve declines and ovulation becomes sporadic. Estrogen levels do not drop steadily; instead, they fluctuate unpredictably, often spiking higher than normal before dropping steeply.',
+      'Menstrual cycle alterations are often the first sign: cycles may shorten from 28 to 21 days, skip months entirely, or feature episodes of heavy or prolonged bleeding.',
+      'Common concurrent symptoms include vasomotor instability (hot flashes, night sweats), sleep fragmentation, mood vulnerability, brain fog, and joint discomfort.',
+      'Diagnosis is primarily clinical based on age, menstrual history, and symptom clusters. Routine blood hormone tests (such as FSH) are often unreliable due to daily fluctuations.'
+    ],
+    keyTakeaways: [
+      'Perimenopause is characterized by wildly fluctuating hormones, not a simple steady decline.',
+      'Irregular periods are normal in perimenopause, but very heavy or prolonged bleeding should always be evaluated.',
+      'Lifestyle modifications, evidence-based therapies, and medical guidance can significantly alleviate symptom burden.'
+    ]
+  },
+  {
+    id: 'hot-flashes-vasomotor',
+    title: 'Managing Hot Flashes and Night Sweats: Science & Relief',
+    category: 'menopause',
+    readTime: '5 min read',
+    badge: 'Symptom Relief',
+    summary: 'Why thermoregulation shifts during perimenopause and evidence-based non-pharmacological and clinical strategies to manage vasomotor episodes.',
+    content: [
+      'Hot flashes and night sweats affect over 75% of women during perimenopause and menopause. They occur due to a narrowed thermoneutral zone in the brain hypothalamus caused by shifting neurokinin B and estrogen pathways.',
+      'A hot flash typically manifests as a sudden surge of intense heat across the chest, neck, and face, often followed by profuse sweating and compensatory shivering.',
+      'Common non-pharmacological triggers include caffeine, alcohol, spicy meals, warm environments, hot beverages, and acute emotional stress.',
+      'Effective management approaches include layered clothing, bedroom temperature control (below 19°C / 66°F), mindfulness-based stress reduction, and avoiding known triggers.',
+      'Clinical interventions: Menopausal Hormone Therapy (MHT) remains the most effective pharmacologic treatment for severe vasomotor symptoms. Non-hormonal options (such as Fezolinetant, SSRIs, SNRIs, or Gabapentin) are also FDA/regulatory approved for suitable candidates.'
+    ],
+    keyTakeaways: [
+      'Hot flashes stem from an altered central thermoregulatory set-point in the brain.',
+      'Tracking frequency, duration, and triggers helps identify modifiable lifestyle factors.',
+      'Consult your healthcare provider to discuss whether hormonal or non-hormonal medical treatments are right for you.'
+    ]
+  },
+  {
+    id: 'postmenopausal-bleeding-alert',
+    title: 'Postmenopausal Bleeding: Essential Safety Guidance',
+    category: 'warning',
+    readTime: '3 min read',
+    badge: 'Clinical Safety Alert',
+    isWarning: true,
+    summary: 'Why any vaginal bleeding occurring 12 or more months after your final period requires prompt medical evaluation.',
+    content: [
+      'Menopause is medically defined as 12 consecutive months without a menstrual period. Any vaginal bleeding or spotting that occurs after this point is defined as postmenopausal bleeding (PMB).',
+      'PMB must never be assumed to be a delayed period or ignored. It requires prompt, thorough evaluation by an OB/GYN or qualified clinician.',
+      'Common causes: The vast majority of PMB cases (approx. 90%) are due to benign conditions such as vaginal or endometrial atrophy, benign endometrial polyps, or cervical changes.',
+      'However, approximately 10% of cases are related to endometrial hyperplasia or endometrial carcinoma. Timely detection provides outstanding curative outcomes.',
+      'Emergency Warning: If postmenopausal bleeding is accompanied by acute severe pelvic pain, dizziness, fainting, shortness of breath, or massive flow, seek emergency emergency care immediately.'
+    ],
+    keyTakeaways: [
+      'Any postmenopausal spotting or bleeding requires clinical evaluation with pelvic ultrasound or endometrial sampling.',
+      'Over 90% of cases are benign, but prompt testing is essential to rule out significant pathology.',
+      'Never wait to see if it happens a second time before consulting a physician.'
+    ]
+  },
+  {
+    id: 'gsm-vaginal-urinary',
+    title: 'Genitourinary Syndrome of Menopause (GSM): Care & Comfort',
+    category: 'menopause',
+    readTime: '4 min read',
+    badge: 'Pelvic Health',
+    summary: 'Understanding vulvovaginal atrophy, recurrent urinary symptoms, and effective long-term solutions for genital comfort and intimate wellness.',
+    content: [
+      'Genitourinary Syndrome of Menopause (GSM) is a chronic, progressive condition affecting the labia, clitoris, vagina, urethra, and bladder due to estrogen receptor decline.',
+      'Unlike vasomotor hot flashes which typically ease over time, GSM symptoms tend to persist or advance without targeted intervention.',
+      'Common symptoms include vaginal dryness, burning sensations, irritation, painful sexual intimacy (dyspareunia), urinary frequency, urgency, and recurrent urinary tract infections (UTIs).',
+      'Over-the-counter options: Regular use of hyaluronic acid or polycarbophil-based vaginal moisturizers 2-3 times weekly, paired with high-grade silicone or water-based lubricants during intimacy.',
+      'Clinical treatments: Low-dose local vaginal estrogen (creams, tablets, or rings) delivers localized estrogen directly to pelvic receptors with minimal systemic absorption, making it safe and highly effective for most women.'
+    ],
+    keyTakeaways: [
+      'GSM is a common, biologically expected condition that does not resolve spontaneously without therapy.',
+      'Vaginal moisturizers are for ongoing hydration; lubricants are for friction reduction during intimacy.',
+      'Local vaginal estrogen has exceptional safety and efficacy records for restoring tissue integrity.'
+    ]
+  },
+  {
+    id: 'hormone-therapy-overview',
+    title: 'Menopausal Hormone Therapy (MHT / HRT): Evidence & Decisions',
+    category: 'menopause',
+    readTime: '6 min read',
+    badge: 'Therapy & Medicine',
+    summary: 'A balanced, modern clinical overview of hormone replacement therapy: benefits, risks, the timing hypothesis, and talking to your doctor.',
+    content: [
+      'Menopausal Hormone Therapy (MHT), formerly known as HRT, is the most clinically effective treatment for vasomotor symptoms, sleep disturbances, and prevention of osteoporotic fractures.',
+      'The "Timing Hypothesis": Leading global menopause societies (IMS, NAMS, BMS) confirm that for symptomatic women under age 60 or within 10 years of menopause onset, the benefits of MHT generally outweigh the risks.',
+      'Regimens vary based on anatomy: Women with an intact uterus require combined therapy (estrogen plus a progestogen) to protect the endometrial lining. Women who have had a hysterectomy typically receive estrogen alone.',
+      'Transdermal estrogen (patches, gels, sprays) is absorbed through the skin, avoiding first-pass hepatic metabolism and carrying lower thrombotic/stroke risks compared to oral formulations.',
+      'Contraindications: MHT is generally contraindicated in individuals with active unexplained vaginal bleeding, history of breast cancer, active thromboembolism, or severe active liver disease.'
+    ],
+    keyTakeaways: [
+      'MHT decisions must be individualized based on personal medical history, symptoms, and risk factors.',
+      'Transdermal bioidentical formulations offer favorable safety profiles regarding clot and stroke risks.',
+      'Use your HER CYCLE symptom and bleeding history report when discussing hormone therapy options with your physician.'
     ]
   }
 ];

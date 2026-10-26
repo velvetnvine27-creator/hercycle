@@ -103,7 +103,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
 
             <h1 className="font-serif text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Hello, {displayName} 🌸
+              Hello, {displayName}
             </h1>
 
             <p className="text-rosepink-100/90 text-sm sm:text-base mt-2 max-w-xl leading-relaxed">

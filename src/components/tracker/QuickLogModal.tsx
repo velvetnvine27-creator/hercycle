@@ -11,7 +11,14 @@ import {
   Plus,
   Clock,
   Sparkles,
-  BookOpen
+  BookOpen,
+  Heart,
+  Zap,
+  Frown,
+  AlertCircle,
+  AlertTriangle,
+  ShieldAlert,
+  Circle
 } from 'lucide-react';
 import {
   PeriodLog,
@@ -52,17 +59,33 @@ const DISCHARGE_TYPES = [
 ];
 
 const MOOD_OPTIONS = [
-  { label: 'Happy', emoji: '😊' },
-  { label: 'Calm', emoji: '😌' },
-  { label: 'Energetic', emoji: '⚡' },
-  { label: 'Grateful', emoji: '✨' },
-  { label: 'Sensitive', emoji: '🥺' },
-  { label: 'Anxious', emoji: '😰' },
-  { label: 'Sad', emoji: '😢' },
-  { label: 'Irritable', emoji: '😠' },
-  { label: 'Overwhelmed', emoji: '🤯' },
-  { label: 'Low', emoji: '🥀' }
+  { label: 'Happy', icon: 'happy' },
+  { label: 'Calm', icon: 'calm' },
+  { label: 'Energetic', icon: 'energetic' },
+  { label: 'Grateful', icon: 'grateful' },
+  { label: 'Sensitive', icon: 'sensitive' },
+  { label: 'Anxious', icon: 'anxious' },
+  { label: 'Sad', icon: 'sad' },
+  { label: 'Irritable', icon: 'irritable' },
+  { label: 'Overwhelmed', icon: 'overwhelmed' },
+  { label: 'Low', icon: 'low' }
 ];
+
+const renderMoodIcon = (icon: string) => {
+  switch (icon) {
+    case 'happy': return <Smile className="w-3.5 h-3.5 text-cherry-600" />;
+    case 'calm': return <Heart className="w-3.5 h-3.5 text-rosepink-400" />;
+    case 'energetic': return <Zap className="w-3.5 h-3.5 text-amber-500" />;
+    case 'grateful': return <Sparkles className="w-3.5 h-3.5 text-cherry-500" />;
+    case 'sensitive': return <Activity className="w-3.5 h-3.5 text-burgundy-700" />;
+    case 'anxious': return <AlertCircle className="w-3.5 h-3.5 text-orange-500" />;
+    case 'sad': return <Frown className="w-3.5 h-3.5 text-indigo-500" />;
+    case 'irritable': return <AlertTriangle className="w-3.5 h-3.5 text-red-500" />;
+    case 'overwhelmed': return <ShieldAlert className="w-3.5 h-3.5 text-purple-500" />;
+    case 'low': return <Moon className="w-3.5 h-3.5 text-gray-500" />;
+    default: return <Smile className="w-3.5 h-3.5" />;
+  }
+};
 
 export const QuickLogModal: React.FC<QuickLogModalProps> = ({
   isOpen,
@@ -427,24 +450,35 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
                   {[
-                    { key: 'none', label: 'No Bleeding', icon: '⚪', desc: 'Clean' },
-                    { key: 'spotting', label: 'Spotting', icon: '💧', desc: 'Few drops' },
-                    { key: 'light', label: 'Light', icon: '🩸', desc: 'Pad/tampon 4-6h' },
-                    { key: 'medium', label: 'Medium', icon: '🩸🩸', desc: 'Standard flow' },
-                    { key: 'heavy', label: 'Heavy', icon: '🩸🩸🩸', desc: 'Frequent changes' }
+                    { key: 'none', label: 'No Bleeding', count: 0, desc: 'Clean' },
+                    { key: 'spotting', label: 'Spotting', count: 1, desc: 'Few drops' },
+                    { key: 'light', label: 'Light', count: 2, desc: 'Pad/tampon 4-6h' },
+                    { key: 'medium', label: 'Medium', count: 3, desc: 'Standard flow' },
+                    { key: 'heavy', label: 'Heavy', count: 4, desc: 'Frequent changes' }
                   ].map(item => (
                     <button
                       key={item.key}
                       type="button"
                       onClick={() => setFlow(item.key as FlowIntensity)}
-                      className={`p-3.5 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 ${
+                      className={`p-3.5 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1.5 ${
                         flow === item.key
                           ? 'bg-rosepink-100 border-cherry-500 text-burgundy-900 font-bold shadow-xs scale-102'
                           : 'bg-white border-rosepink-200 text-gray-600 hover:border-rosepink-300'
                       }`}
                     >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="text-xs">{item.label}</span>
+                      <div className="h-5 flex items-center justify-center gap-1">
+                        {item.count === 0 ? (
+                          <Circle className="w-3.5 h-3.5 text-gray-400" />
+                        ) : (
+                          Array.from({ length: item.count }).map((_, i) => (
+                            <span
+                              key={i}
+                              className={`w-2 h-2 rounded-full ${item.key === 'spotting' ? 'bg-rosepink-300' : 'bg-cherry-600'}`}
+                            />
+                          ))
+                        )}
+                      </div>
+                      <span className="text-xs font-semibold">{item.label}</span>
                       <span className="text-[10px] text-gray-400 font-normal">{item.desc}</span>
                     </button>
                   ))}
@@ -619,7 +653,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
                             : 'bg-rosepink-50 border border-rosepink-200 text-burgundy-900 hover:bg-rosepink-100'
                         }`}
                       >
-                        <span>{m.emoji}</span>
+                        <span>{renderMoodIcon(m.icon)}</span>
                         <span>{m.label}</span>
                       </button>
                     );

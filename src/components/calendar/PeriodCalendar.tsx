@@ -7,7 +7,8 @@ import {
   Calendar as CalendarIcon,
   Plus,
   Info,
-  Clock
+  Clock,
+  Star
 } from 'lucide-react';
 import {
   PeriodLog,
@@ -223,8 +224,9 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
             // Ovulation day
             dayStyle = 'bg-amber-100/80 border-amber-400 text-amber-950 font-bold hover:bg-amber-200/70';
             indicatorBadge = (
-              <span className="text-[9px] font-bold text-amber-800 uppercase flex items-center gap-0.5">
-                ★ Ovulation
+              <span className="text-[9px] font-bold text-amber-800 uppercase flex items-center gap-1">
+                <Star className="w-2.5 h-2.5 text-amber-600 fill-amber-500" />
+                Ovulation
               </span>
             );
           } else if (status?.isFertile) {
