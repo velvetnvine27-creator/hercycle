@@ -118,7 +118,7 @@ export const DoctorReportModal: React.FC<DoctorReportModalProps> = ({
         </div>
 
         {/* Printable Document Body */}
-        <div className="p-8 sm:p-10 space-y-6 max-h-[80vh] overflow-y-auto print:max-h-none print:p-0 print:overflow-visible text-gray-800">
+        <div className="p-8 sm:p-10 space-y-6 modal-body-height-lg overflow-y-auto modal-scroll print:max-h-none print:p-0 print:overflow-visible text-gray-800">
           {/* Document Title Header */}
           <div className="border-b-2 border-burgundy-900 pb-4 flex justify-between items-start">
             <div>

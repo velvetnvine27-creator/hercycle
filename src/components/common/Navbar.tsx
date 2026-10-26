@@ -236,7 +236,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-rosepink-200 px-3 py-1.5 flex items-center justify-around shadow-lg">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-rosepink-200 px-3 pt-1.5 pb-1.5 safe-bottom flex items-center justify-around shadow-lg">
         <button
           onClick={() => onTabChange('home')}
           className={`flex flex-col items-center py-1 px-2 rounded-xl transition-all ${

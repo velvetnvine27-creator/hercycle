@@ -92,7 +92,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+        <div className="p-6 space-y-5 modal-body-height-day overflow-y-auto modal-scroll">
           {/* Estimated Phase Badge */}
           <div className="p-4 rounded-2xl bg-blush-50/70 border border-rosepink-200 flex items-center justify-between">
             <div className="flex items-center gap-2.5">

@@ -327,7 +327,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-burgundy-950/60 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-soft-lg border border-rosepink-200 overflow-hidden animate-slide-up my-auto flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-soft-lg border border-rosepink-200 overflow-hidden animate-slide-up my-auto flex flex-col max-h-[90dvh]">
         {/* Header */}
         <div className="px-6 py-4 bg-blush-50 border-b border-rosepink-100 flex items-center justify-between">
           <div>
@@ -417,7 +417,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1">
+        <div className="p-6 overflow-y-auto space-y-6 flex-1 modal-scroll">
           {/* TAB 1: PERIOD & FLOW */}
           {activeTab === 'period' && (
             <div className="space-y-6 animate-fade-in">

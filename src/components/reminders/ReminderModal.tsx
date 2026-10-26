@@ -83,7 +83,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
 
         {/* Notifications list */}
         {notifications.length > 0 ? (
-          <div className="space-y-2.5 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-2.5 modal-body-height-reminder overflow-y-auto modal-scroll">
             {notifications.map(n => {
               const dateObj = new Date(n.timestamp);
               const timeDisplay = isNaN(dateObj.getTime())

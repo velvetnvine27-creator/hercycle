@@ -83,7 +83,7 @@ export const Modal: React.FC<ModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-[78vh] overflow-y-auto">
+        <div className="p-6 modal-body-height overflow-y-auto modal-scroll">
           {children}
         </div>
       </div>

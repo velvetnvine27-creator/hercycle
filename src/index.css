@@ -6,12 +6,45 @@
   html {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     -webkit-tap-highlight-color: transparent;
+    /* Use dvh so the page height tracks the dynamic viewport on mobile browsers
+       (shrinks when the browser chrome collapses on scroll). */
+    height: 100%;
   }
 
   body {
     background-color: #FFF9F5;
     color: #2D3748;
     overflow-x: hidden;
+    min-height: 100%;
+    /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── Safe-area utilities for iPhone X+ notch / Dynamic Island / home bar ── */
+  /* Applied to the fixed bottom nav bar */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Applied to main content so it clears the bottom nav + home indicator */
+  .content-safe-bottom {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Dynamic viewport height helpers ── */
+  /* Replace max-h-[Xvh] in modals with dvh so modals fit the real visible area
+     even when the mobile browser address bar is showing. */
+  .modal-body-height {
+    max-height: min(78dvh, 78vh);
+  }
+  .modal-body-height-lg {
+    max-height: min(80dvh, 80vh);
+  }
+  .modal-body-height-day {
+    max-height: min(75dvh, 75vh);
+  }
+  .modal-body-height-reminder {
+    max-height: min(60dvh, 60vh);
   }
 
   /* Custom subtle scrollbar */
@@ -28,5 +61,11 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #C62845;
+  }
+
+  /* Prevent pull-to-refresh interfering with scroll within modals */
+  .modal-scroll {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 }

@@ -146,9 +146,10 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
   }
 
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const weekdaysMobile = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft border border-rosepink-200/80">
+    <div className="bg-white rounded-3xl p-4 sm:p-8 shadow-soft border border-rosepink-200/80">
       {/* Calendar Header Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-rosepink-100">
         <div>
@@ -190,9 +191,10 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
 
       {/* Weekday Labels */}
       <div className="grid grid-cols-7 gap-1 sm:gap-2 my-4 text-center">
-        {weekdays.map(w => (
+        {weekdays.map((w, i) => (
           <div key={w} className="text-[11px] font-bold uppercase tracking-wider text-burgundy-900/60 py-1">
-            {w}
+            <span className="hidden sm:inline">{w}</span>
+            <span className="sm:hidden">{weekdaysMobile[i]}</span>
           </div>
         ))}
       </div>
@@ -243,14 +245,14 @@ export const PeriodCalendar: React.FC<PeriodCalendarProps> = ({
             <div
               key={dateStr}
               onClick={() => onSelectDate(dateStr)}
-              className={`min-h-[64px] sm:min-h-[82px] p-1.5 sm:p-2 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between select-none relative group ${dayStyle} ${
+              className={`min-h-[52px] sm:min-h-[82px] p-1 sm:p-2 rounded-xl sm:rounded-2xl border transition-all cursor-pointer flex flex-col justify-between select-none relative group ${dayStyle} ${
                 isToday ? 'ring-2 ring-burgundy-800 ring-offset-2' : ''
               }`}
               title={`Click to view or edit details for ${dateStr}`}
             >
               {/* Day Number and Today Marker */}
               <div className="flex items-center justify-between w-full">
-                <span className={`text-xs sm:text-sm ${isToday ? 'underline font-extrabold' : ''}`}>
+                <span className={`text-[11px] sm:text-sm ${isToday ? 'underline font-extrabold' : ''}`}>
                   {dayNum}
                 </span>
 
