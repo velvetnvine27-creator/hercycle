@@ -132,7 +132,7 @@ export const App: React.FC = () => {
     }
 
     notificationService.sendNotification(
-      'Welcome to Bloom Cycle 🌸',
+      'Welcome to HerCycle 🌸',
       'Your cycle health sanctuary is ready. All data remains 100% offline and private on your device.',
       'info'
     );
@@ -180,7 +180,7 @@ export const App: React.FC = () => {
         <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-burgundy-800 to-cherry-500 animate-spin flex items-center justify-center text-white mb-4 shadow-soft">
           <div className="w-8 h-8 rounded-full bg-cream" />
         </div>
-        <h2 className="font-serif text-2xl font-bold text-burgundy-900">Bloom Cycle</h2>
+        <h2 className="font-serif text-2xl font-bold text-burgundy-900">HerCycle</h2>
         <p className="text-xs text-burgundy-900/60 mt-1">Preparing your private local health store...</p>
       </div>
     );

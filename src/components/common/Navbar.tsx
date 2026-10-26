@@ -45,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-serif font-bold text-xl tracking-tight text-burgundy-900">
-                  BLOOM CYCLE
+                  HERCYCLE
                 </span>
                 <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-rosepink-100 text-burgundy-800 border border-rosepink-200">
                   100% Offline & Private
@@ -194,7 +194,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <span className="font-serif font-bold text-lg tracking-tight text-burgundy-900">
-              Bloom Cycle
+              HerCycle
             </span>
           </div>
         </div>

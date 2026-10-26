@@ -7,10 +7,10 @@ import {
   HygieneLog
 } from '../types';
 
-const DB_NAME = 'bloom_cycle_db';
+const DB_NAME = 'hercycle_db';
 const DB_VERSION = 1;
 
-interface BloomExportData {
+interface HerCycleExportData {
   version: number;
   exportedAt: string;
   source: string;
@@ -22,7 +22,7 @@ interface BloomExportData {
   hygieneLogs: HygieneLog[];
 }
 
-export class BloomDatabase {
+export class HerCycleDatabase {
   private dbPromise: Promise<IDBDatabase> | null = null;
 
   private getDB(): Promise<IDBDatabase> {
@@ -315,10 +315,10 @@ export class BloomDatabase {
       this.getAllMedicalLogs()
     ]);
 
-    const exportPayload: BloomExportData = {
+    const exportPayload: HerCycleExportData = {
       version: 1,
       exportedAt: new Date().toISOString(),
-      source: 'Bloom Cycle (Offline IndexedDB)',
+      source: 'HerCycle (Offline IndexedDB)',
       settings: settings || {
         onboardingCompleted: false,
         cycleLength: 28,
@@ -351,7 +351,7 @@ export class BloomDatabase {
       }
 
       if (!Array.isArray(parsed.periodLogs) && !parsed.settings) {
-        return { success: false, message: 'Invalid Bloom Cycle data: missing required settings or period logs structure.' };
+        return { success: false, message: 'Invalid HerCycle data: missing required settings or period logs structure.' };
       }
 
       const db = await this.getDB();
@@ -446,4 +446,4 @@ export class BloomDatabase {
   }
 }
 
-export const dbService = new BloomDatabase();
+export const dbService = new HerCycleDatabase();

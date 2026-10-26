@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bloom-cycle-cache-v1';
+const CACHE_NAME = 'hercycle-cache-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

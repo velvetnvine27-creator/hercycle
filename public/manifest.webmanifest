@@ -1,6 +1,6 @@
 {
-  "name": "Bloom Cycle - Period & Health Tracker",
-  "short_name": "Bloom Cycle",
+  "name": "HerCycle - Period & Health Tracker",
+  "short_name": "HerCycle",
   "description": "Private, elegant, offline-first menstrual cycle and holistic wellness tracker.",
   "start_url": "/",
   "display": "standalone",

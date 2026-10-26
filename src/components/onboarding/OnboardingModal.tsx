@@ -76,7 +76,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
           <div className="w-12 h-12 mx-auto rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-2 shadow-xs">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
-          <h2 className="font-serif text-2xl font-bold tracking-tight">Welcome to Bloom Cycle</h2>
+          <h2 className="font-serif text-2xl font-bold tracking-tight">Welcome to HerCycle</h2>
           <p className="text-rosepink-100 text-xs mt-1 max-w-sm mx-auto">
             Your private, non-commercial, offline menstrual sanctuary.
           </p>
@@ -331,7 +331,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
                   <AlertTriangle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
                   <div className="text-xs text-amber-950 leading-relaxed">
                     <p className="font-bold text-sm text-amber-900 mb-1">Educational Predictions Only</p>
-                    Cycle phases and fertile windows are statistical estimates. <strong>Never rely on Bloom Cycle predictions as contraception</strong> or as a guarantee against pregnancy. This app does not diagnose conditions or replace professional gynecological care.
+                    Cycle phases and fertile windows are statistical estimates. <strong>Never rely on HerCycle predictions as contraception</strong> or as a guarantee against pregnancy. This app does not diagnose conditions or replace professional gynecological care.
                   </div>
                 </div>
 
@@ -392,7 +392,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
                 }`}
               >
                 <Check className="w-4 h-4" />
-                <span>Start Bloom Cycle</span>
+                <span>Start HerCycle</span>
               </button>
             )}
           </div>

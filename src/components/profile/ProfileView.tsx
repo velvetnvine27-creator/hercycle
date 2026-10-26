@@ -82,7 +82,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       const a = document.createElement('a');
       const dateStr = new Date().toISOString().slice(0, 10);
       a.href = url;
-      a.download = `bloom-cycle-backup-${dateStr}.json`;
+      a.download = `hercycle-backup-${dateStr}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
@@ -156,7 +156,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     try {
       await dbService.clearAllData();
       onDataReload();
-      alert('All local Bloom Cycle records have been permanently cleared.');
+      alert('All local HerCycle records have been permanently cleared.');
     } catch (err) {
       console.error('Failed to wipe data:', err);
     }
@@ -165,7 +165,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const handleTestNotification = async () => {
     await notificationService.requestPermission();
     notificationService.sendNotification(
-      'Bloom Cycle Test Notification 🌸',
+      'HerCycle Test Notification 🌸',
       'Reminders and in-app alerts are active and functioning!',
       'info'
     );
@@ -472,7 +472,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </h3>
         </div>
         <p className="text-xs text-gray-600 leading-relaxed">
-          Bloom Cycle is an offline Progressive Web Application (PWA). All calculations, phase predictions, symptom records, and private journals are processed and stored exclusively inside your browser's persistent <strong>IndexedDB</strong> storage.
+          HerCycle is an offline Progressive Web Application (PWA). All calculations, phase predictions, symptom records, and private journals are processed and stored exclusively inside your browser's persistent <strong>IndexedDB</strong> storage.
         </p>
         <p className="text-xs text-gray-600 leading-relaxed">
           <strong>Important storage disclaimer:</strong> Browser IndexedDB is retained locally on your computer/phone. It does not synchronize automatically across devices, and clearing your browser cache/site data will remove it unless you export a JSON backup. Browser storage is not equivalent to HIPAA-compliant encrypted hospital cloud storage; we encourage you to keep your personal device passcode-protected.

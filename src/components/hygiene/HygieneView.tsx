@@ -69,7 +69,7 @@ export const HygieneView: React.FC = () => {
   // Period Emergency Kit Checklist (persisted in localStorage)
   const [kitItems, setKitItems] = useState<Record<string, boolean>>(() => {
     try {
-      const saved = localStorage.getItem('bloom_period_kit');
+      const saved = localStorage.getItem('hercycle_period_kit');
       return saved ? JSON.parse(saved) : {
         '2–3 Spare Pads or Tampons': true,
         'Extra clean cotton underwear': true,
@@ -89,7 +89,7 @@ export const HygieneView: React.FC = () => {
     const updated = { ...kitItems, [item]: !kitItems[item] };
     setKitItems(updated);
     try {
-      localStorage.setItem('bloom_period_kit', JSON.stringify(updated));
+      localStorage.setItem('hercycle_period_kit', JSON.stringify(updated));
     } catch {
       // Storage unavailable
     }
@@ -104,7 +104,7 @@ export const HygieneView: React.FC = () => {
           if (prev <= 1) {
             setIsRunning(false);
             notificationService.sendNotification(
-              'Bloom Cycle Product Reminder 🌸',
+              'HerCycle Product Reminder 🌸',
               `Time to change or check your ${selectedProduct.name}! Keep your body fresh and comfortable.`,
               'hygiene'
             );

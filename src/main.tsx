@@ -9,7 +9,7 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     navigator.serviceWorker
       .register('/sw.js')
       .then(reg => {
-        console.log('Bloom Cycle Service Worker registered:', reg.scope);
+        console.log('HerCycle Service Worker registered:', reg.scope);
       })
       .catch(err => {
         console.log('Service Worker registration failed:', err);

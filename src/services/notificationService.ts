@@ -14,7 +14,7 @@ class NotificationService {
   constructor() {
     // Load persisted in-app alerts from localStorage
     try {
-      const stored = localStorage.getItem('bloom_in_app_notifications');
+      const stored = localStorage.getItem('hercycle_in_app_notifications') || localStorage.getItem('bloom_in_app_notifications');
       if (stored) {
         this.inAppNotifications = JSON.parse(stored);
       }
@@ -118,7 +118,7 @@ class NotificationService {
 
   private persist() {
     try {
-      localStorage.setItem('bloom_in_app_notifications', JSON.stringify(this.inAppNotifications));
+      localStorage.setItem('hercycle_in_app_notifications', JSON.stringify(this.inAppNotifications));
     } catch {
       // Storage full or private mode
     }

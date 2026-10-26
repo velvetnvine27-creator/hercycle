@@ -123,7 +123,7 @@ export const DoctorReportModal: React.FC<DoctorReportModalProps> = ({
           <div className="border-b-2 border-burgundy-900 pb-4 flex justify-between items-start">
             <div>
               <h1 className="font-serif text-2xl font-bold text-burgundy-950">
-                BLOOM CYCLE • CLINICAL MENSTRUAL LOG
+                HERCYCLE • CLINICAL MENSTRUAL LOG
               </h1>
               <p className="text-xs text-gray-600 mt-1">
                 Patient-reported menstrual cycle and symptom history for clinical evaluation
@@ -250,7 +250,7 @@ export const DoctorReportModal: React.FC<DoctorReportModalProps> = ({
 
           {/* Disclaimer Footer */}
           <div className="pt-4 border-t border-gray-200 text-[10px] text-gray-400 flex justify-between items-center">
-            <span>Bloom Cycle • Offline IndexedDB Verified • Zero Cloud Transmission</span>
+            <span>HerCycle • Offline IndexedDB Verified • Zero Cloud Transmission</span>
             <span>Page 1 of 1</span>
           </div>
         </div>

@@ -42,7 +42,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     keyTakeaways: [
       'Cycle length naturally varies between 21 and 35 days for most healthy adults.',
       'Estrogen fuels creativity and physical endurance; progesterone encourages recovery and reflection.',
-      'Phase estimates in Bloom Cycle help you plan self-care, but should never be used as a contraceptive method.'
+      'Phase estimates in HerCycle help you plan self-care, but should never be used as a contraceptive method.'
     ]
   },
   {
@@ -56,7 +56,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
       'Premenstrual Syndrome (PMS) encompasses physical and emotional symptoms that arise 7 to 10 days before menstruation and vanish shortly after flow begins.',
       'Why does it happen? As progesterone and estrogen drop in the late luteal phase, they directly influence brain neurotransmitters, particularly serotonin and GABA. This drop can trigger irritability, tearfulness, breast soreness, food cravings, and mild insomnia.',
       'What is PMDD? Premenstrual Dysphoric Disorder (PMDD) is a severe, debilitating medical condition affecting 3–8% of menstruating individuals. It is characterized by extreme mood swings, overwhelming despair, panic attacks, severe anger, and feelings of hopelessness that severely disrupt daily life.',
-      'Tracking with Bloom Cycle provides objective historical data. If your severe emotional distress reliably occurs solely during the luteal window and resolves with menstruation, bring your log to a compassionate healthcare provider.'
+      'Tracking with HerCycle provides objective historical data. If your severe emotional distress reliably occurs solely during the luteal window and resolves with menstruation, bring your log to a compassionate healthcare provider.'
     ],
     keyTakeaways: [
       'PMS is common, but debilitating emotional distress is not something you must silently suffer.',
@@ -120,7 +120,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     keyTakeaways: [
       'You can have PCOS without having visible ovarian cysts, and you can have ovarian cysts without having PCOS.',
       'Insulin resistance is a central driver in up to 70% of individuals with PCOS.',
-      'Tracking cycle intervals in Bloom Cycle provides essential documentation for your physician.'
+      'Tracking cycle intervals in HerCycle provides essential documentation for your physician.'
     ]
   },
   {
@@ -156,7 +156,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     content: [
       'Doctor visits are often brief (15–20 minutes). Arriving prepared empowers you to advocate for your health and ensures critical details are not missed.',
       'Checklist to Bring:',
-      '1. Your Bloom Cycle Stats: Date of last period, average cycle length, longest and shortest cycles over the past 6 months.',
+      '1. Your HerCycle Stats: Date of last period, average cycle length, longest and shortest cycles over the past 6 months.',
       '2. Symptom Trend Log: Note which cycle phase your symptoms peak (e.g. "Severe migraines consistently occur 3 days before bleeding starts").',
       '3. Medication & Supplement List: Exact dosages of prescriptions, birth control, and over-the-counter pain relievers.',
       '4. Specific Questions: Write down your top 3 concerns at the top of your notepad so you can raise them first.',
@@ -164,7 +164,7 @@ export const EDUCATION_ARTICLES: EducationArticle[] = [
     ],
     keyTakeaways: [
       'Quantify your symptoms: say "Pain rated 8/10 for 3 consecutive days, preventing me from standing" instead of "I have cramps".',
-      'Export or review your Bloom Cycle history before stepping into the examination room.',
+      'Export or review your HerCycle history before stepping into the examination room.',
       'You are always entitled to ask for a chaperone, request a smaller speculum, or seek a second opinion.'
     ]
   }

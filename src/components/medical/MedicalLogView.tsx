@@ -126,7 +126,7 @@ export const MedicalLogView: React.FC<MedicalLogViewProps> = ({ medicalLogs, onR
         <div className="space-y-1">
           <span className="font-bold block text-sm">Clinical Information Disclaimer</span>
           <p className="leading-relaxed">
-            Bloom Cycle never prescribes medication, calculates therapeutic dosages, diagnoses conditions, or replaces professional clinical advice. All entered data is solely for your personal organizational reference and discussion with your licensed healthcare provider.
+            HerCycle never prescribes medication, calculates therapeutic dosages, diagnoses conditions, or replaces professional clinical advice. All entered data is solely for your personal organizational reference and discussion with your licensed healthcare provider.
           </p>
         </div>
       </div>
